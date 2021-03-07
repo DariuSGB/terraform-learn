@@ -1,33 +1,25 @@
-variable "myresources" {
-    description = "This is the CIDR block for VPC and subnets"
-    type = list(object({
-        cidr_block = string
-        name = string
-    }))
+
+provider "aws" {
+    region = "eu-west-3"
 }
 
-variable "avail_zone" {}
+variable vpc_cidr_blocks {}
+variable subnet_cidr_blocks {}
+variable avail_zone {}
+variable env_prefix {}
 
-resource "aws_vpc" "lab-vpc" {
-    cidr_block = var.myresources[0].cidr_block
+resource "aws_vpc" "myapp-vpc" {
+    cidr_block = var.vpc_cidr_blocks
     tags = {
-        Name: var.myresources[0].name
+        Name: "${var.env_prefix}-vpc"
     }
 }
 
-resource "aws_subnet" "mgmt-subnet" {
-    vpc_id = aws_vpc.lab-vpc.id
-    cidr_block = var.myresources[1].cidr_block
+resource "aws_subnet" "myapp-subnet-1" {
+    vpc_id = aws_vpc.myapp-vpc.id
+    cidr_block = var.subnet_cidr_blocks
     availability_zone = var.avail_zone
     tags = {
-        Name: var.myresources[1].name
+        Name: "${var.env_prefix}-subnet1"
     }
-}
-
-output "lab-vpc-id" {
-    value = aws_vpc.lab-vpc.id
-}
-
-output "lab-subnet-id" {
-    value = aws_subnet.mgmt-subnet.id
 }
