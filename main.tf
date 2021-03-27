@@ -175,8 +175,6 @@ data "aws_ami" "lastest-ami" {
 
 ## Print all the variable of the most recent Amanzon Machine Image
 
-##
-
 output "aws_ami_id" {
     value = data.aws_ami.lastest-ami
 }
